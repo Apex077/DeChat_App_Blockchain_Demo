@@ -17,18 +17,27 @@ export default function Home() {
   const [newMessage, setNewMessage] = useState('');
 
   useEffect(() => {
-    fetchMessages();
-  }, []);
+    // Function to fetch messages
+    const fetchMessages = async () => {
+      const response = await axios.get('/api/blockchain');
+      setMessages(response.data);
+    };
 
-  const fetchMessages = async () => {
-    const response = await axios.get('/api/blockchain');
-    setMessages(response.data);
-  };
+    // Initial fetch
+    fetchMessages();
+
+    // Set up polling every 2 seconds (2000 ms)
+    const intervalId = setInterval(() => {
+      fetchMessages();
+    }, 2000);
+
+    // Cleanup on unmount
+    return () => clearInterval(intervalId);
+  }, []);
 
   const sendMessage = async () => {
     if (newMessage.trim()) {
       await axios.post('/api/blockchain', { message: newMessage });
-      fetchMessages();
       setNewMessage('');
     }
   };
@@ -39,10 +48,11 @@ export default function Home() {
     }
   };
 
-  // New function to clear the blockchain
+  // Function to clear the blockchain
   const clearBlockchain = async () => {
     await axios.delete('/api/blockchain');
-    fetchMessages();
+    // Optionally, you can clear messages after deleting
+    // setMessages([]);
   };
 
   return (
@@ -55,7 +65,7 @@ export default function Home() {
           <div key={block.index} className="mb-4 p-2 border-b text-black">
             <p className="text-black"><strong>Block #{block.index}</strong></p>
             <p className="text-black">Message: {block.message}</p>
-            <p className="text-black">Timestamp: {new Date(block.timestamp).toLocaleString()}</p> {/* Display timestamp */}
+            <p className="text-black">Timestamp: {new Date(block.timestamp).toLocaleString()}</p>
             <p className="text-black">Hash: <span className="text-xs text-gray-500">{block.hash}</span></p>
             <p className="text-black">Previous Hash: <span className="text-xs text-gray-500">{block.previousHash}</span></p>
           </div>
