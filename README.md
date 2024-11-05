@@ -6,11 +6,6 @@ DeChat is a simple chat application that leverages blockchain technology to ensu
 
 - [Features](#features)
 - [Technologies Used](#technologies-used)
-- [Installation](#installation)
-- [Usage](#usage)
-- [API Endpoints](#api-endpoints)
-- [Clear Blockchain](#clear-blockchain)
-- [License](#license)
 
 ## Features
 
